@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>news-platform-react</title>
+
+  <!-- (optional) prevent transition flicker on load -->
+  <style>
+    .no-transitions *,
+    .no-transitions *::before,
+    .no-transitions *::after {
+      transition: none !important;
+    }
+  </style>
+  <script>
+    // Disable transitions during first paint
+    document.documentElement.classList.add("no-transitions");
+
+    // Resolve theme before paint
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme") || "cupcake"; // or "system"
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const resolved = saved === "system" ? (prefersDark ? "dark" : "light") : saved;
+
+        // daisyUI uses data-theme
+        document.documentElement.dataset.theme = resolved;
+
+        // If you also use Tailwind's dark mode via class, keep in sync:
+        document.documentElement.classList.toggle("dark", resolved === "dark");
+      } catch { }
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

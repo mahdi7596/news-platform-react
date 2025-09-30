@@ -1,11 +1,23 @@
+import { useEffect, useState } from "react";
 import { useTheme } from "../context/switcheTheme";
 import { themes } from "../models/ThemeStyles";
 
 const ThemeController = () => {
   const { theme, setTheme } = useTheme();
+  const [closeDropDown, setCloseDropDown] = useState<boolean>(false);
+
   const changeTheme = (e) => {
-    setTheme(e.target.value);
+    const newTheme = (e.currentTarget as HTMLInputElement).value;
+    setTheme(newTheme);
+    setCloseDropDown(true);
   };
+
+  useEffect(() => {
+    const dropdownApperance = setTimeout(() => {
+      setCloseDropDown(false);
+    }, 10);
+    return () => clearTimeout(dropdownApperance);
+  }, [closeDropDown]);
 
   return (
     <div className="dropdown">
@@ -21,27 +33,30 @@ const ThemeController = () => {
           <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
         </svg>
       </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content bg-base-300 rounded-box z-1 w-fit p-2 shadow-2xl"
-      >
-        {themes.map((item, index) => (
-          <li key={index}>
-            <input
-              type="radio"
-              name="theme-dropdown"
-              aria-label={item}
-              value={item}
-              onChange={changeTheme}
-              className={`theme-controller btn btn-sm btn-block btn-ghost justify-start ${
-                theme === item
-                  ? "text-gray-500 pointer-events-none"
-                  : "text-orange-500"
-              }`}
-            />
-          </li>
-        ))}
-      </ul>
+      {!closeDropDown ? (
+        <ul
+          tabIndex={0}
+          className="dropdown-content bg-base-300 rounded-box z-1 w-fit p-2 shadow-2xl"
+        >
+          {themes.map((item) => (
+            <li key={item}>
+              <input
+                type="radio"
+                name="theme-dropdown"
+                aria-label={item}
+                value={item}
+                checked={theme === item}
+                onChange={changeTheme}
+                className={`theme-controller btn btn-sm btn-block btn-ghost justify-start ${
+                  theme === item
+                    ? "text-primary-content/50 pointer-events-none"
+                    : "text-primary-content"
+                }`}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 };
